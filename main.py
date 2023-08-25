@@ -1,7 +1,6 @@
 import io
 import streamlit as st
 from PIL import Image
-import numpy as np
 
 def load_image():
     uploaded_file = st.file_uploader(label="Выберите изображение для распознавания")
