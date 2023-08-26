@@ -133,7 +133,7 @@ if not button_clicked:
         print('Finished')
 
 if button_clicked:
-    st.title('Выгрузка данных')
+    st.title('Подготовка отчета')
     st.write('Окно для выгрузки данных')
     df =pd.read_csv('cash/data.csv')
     st.dataframe(df,hide_index=True,width=500)
