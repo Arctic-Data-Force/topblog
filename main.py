@@ -1,4 +1,6 @@
 import io
+import os
+import shutil
 import cv2
 import base64
 import random
@@ -7,6 +9,7 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 import streamlit as st
+import matplotlib.pyplot as plt
 from streamlit_image_select import image_select
 
 def image_ai(image, source):
@@ -34,6 +37,14 @@ def image_ai(image, source):
     
     if source == "icons/7.png": #OK
         pass
+    
+    if os.path.exists('cash'):
+        shutil.rmtree('cash')
+    
+    if not os.path.exists('cash'):
+        os.makedirs('cash')
+        os.makedirs('cash/imgs')
+        
     
     
     return random.randint(100, 2000)
@@ -86,18 +97,18 @@ def load_images():
         return None
     return images
 
-st.set_page_config(layout="wide")
+
 
 invalid_img = []
 correct_types = ["jpg", "png",'bmp','jpeg','heic']
 
 button_clicked = False
+col1, col2, col3, col4, col5 = st.columns(5)
+if not button_clicked:
+    if  col3.button("Отправить"):button_clicked = True
 
 if not button_clicked:
-    if  st.button("Отправить"):button_clicked = True
-
-if not button_clicked:
-    st.title("Загрузка данных")
+    st.markdown("<h1 style='text-align: center;'>Загрузка данных</h1>", unsafe_allow_html=True)
 
     imgs = image_select(
         label="Выберите платформу",
@@ -130,20 +141,48 @@ if not button_clicked:
             df.loc[len(df)] = new_row
         
         df.to_csv('cash/data.csv', index=False) 
+        
+        top5 = df.loc[df['KPI'] != 'Invalid'].sort_values(by='KPI', ascending=False).head(5)['File name'].tolist()
+        print(top5)
+        with open('cash/top5.txt', 'w') as file:
+            for item in top5:
+                file.write(item + '\n')
+        for one in top5:
+            for img in images:
+                if one == img[1]:
+                    img[0].save(os.path.join('cash/imgs', one))
+
         print('Finished')
 
 if button_clicked:
-    st.title('Подготовка отчета')
-    st.write('Окно для выгрузки данных')
+    st.markdown("<h1 style='text-align: center;'>Подготовка отчета</h1>", unsafe_allow_html=True)
     df =pd.read_csv('cash/data.csv')
-    st.dataframe(df,hide_index=True,width=500)
+    fdf = df.loc[df['KPI'] != 'Invalid']
+    st.dataframe(df,hide_index=True,width=699)
     
-    with st.expander("",True):
-        max_value = df['KPI'].max()
+    with st.expander("Доп. информация",False):
+        max_value = fdf['KPI'].max()
         st.write(f"Максимальный KPI: {max_value}")
-        min_value = df['KPI'].min()
+        min_value = fdf['KPI'].min()
         st.write(f"Минимальный KPI: {min_value}")
         st.write(f"Всего изображений {len(df)}")
-        st.write(f"Не обработалось: {len(invalid_img)}")
+        st.write(f"Не обработалось: {df['KPI'].value_counts().get('Invalid', 0)}")
+        
+    fig, ax = plt.subplots()
+    ax.hist(fdf["KPI"], bins=15)
+    ax.set_xlabel('KPI')
+    ax.set_ylabel('Частота')
+    ax.set_title('Гистограмма распределения KPI')
+    st.pyplot(fig)
+    
+    with open('cash/top5.txt','r') as file:
+        array = [line.strip() for line in file]
+    st.markdown("<h2 style='text-align: center;'>Топ 5</h2>", unsafe_allow_html=True)
 
-    st.markdown(download_link(df, "example.csv", 'Скачать'), unsafe_allow_html=True)
+    for item in array:
+        print(item)
+        image = Image.open(f'cash/imgs/{item}')
+        st.image(image, caption=item)
+        
+    
+    st.markdown(download_link(df, "example.csv", "<div style='text-align: center; color: grey; font-size: 34px;'>Скачать</div>"), unsafe_allow_html=True)
