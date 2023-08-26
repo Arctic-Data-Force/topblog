@@ -6,8 +6,6 @@ import zipfile
 import pandas as pd
 import random
 
-
-
 def load_images_from_zip(zip_file):
     images = []
     with zipfile.ZipFile(zip_file) as archive:
@@ -26,7 +24,8 @@ def load_images_from_zip(zip_file):
     return images
 
 def load_images():
-    uploaded_files = st.file_uploader(label="Выберите изображение или архив с изображениями для распознавания", accept_multiple_files=True)
+    uploaded_files = st.file_uploader(label="Выберите изображение или архив с изображениями для распознавания",
+                                      accept_multiple_files=True, type=["jpg", "png",'bmp','jpeg','zip'])
     
     images = []
     for uploaded_file in uploaded_files:
@@ -50,8 +49,6 @@ def load_images():
 
 result = st.button("Отправить",)
 
-
-
 if not result:
     st.title("Загрузка данных")
 
@@ -69,8 +66,6 @@ if not result:
         
         use_container_width=False,
     )
-
-    
     
     # Пример использования:
     images = load_images()
@@ -83,10 +78,7 @@ if not result:
             random_number = random.randint(100, 2000)
             new_row = [random_number, name]
             df.loc[len(df)] = new_row
-        print(df)
         df.to_csv('cash/data.csv', index=False) 
-            
-
 
 if result:
     st.title('Выгрузка данных')
