@@ -12,6 +12,7 @@ def load_images_from_zip(zip_file):
     images = []
     with zipfile.ZipFile(zip_file) as archive:
         for file_info in archive.infolist():
+            print(file_info)
             if file_info.filename.endswith('/'):
                 continue  # skip directories
             with archive.open(file_info) as file:
@@ -49,8 +50,7 @@ def load_images():
 
 result = st.button("Отправить",)
 
-df = pd.DataFrame()
-column_names = ['KPI', 'имя файла']
+
 
 if not result:
     st.title("Загрузка данных")
@@ -75,13 +75,22 @@ if not result:
     # Пример использования:
     images = load_images()
     if images is not None:
+        column_names = ['KPI', 'Имя файла']
+        df = pd.DataFrame(columns=column_names)
         st.write(f"Загружено {len(images)} изображений.")
         for img, name in images:
+            #Обработку изображения добавлять сюда
             random_number = random.randint(100, 2000)
-            print(name)
+            new_row = [random_number, name]
+            df.loc[len(df)] = new_row
+        print(df)
+        df.to_csv('cash/data.csv', index=False) 
             
+
 
 if result:
     st.title('Выгрузка данных')
     st.write('Окно для выгрузки данных')
+    df =pd.read_csv('cash/data.csv')
+    st.dataframe(df)
     
