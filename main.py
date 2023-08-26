@@ -1,4 +1,5 @@
 import io
+import os
 import cv2
 import base64
 import random
@@ -35,7 +36,9 @@ def image_ai(image, source):
     if source == "icons/7.png": #OK
         pass
     
-    
+    if not os.path.exists('cash'):
+        os.makedirs('cash')
+
     return random.randint(100, 2000)
 
 def download_link(object_to_download, download_filename, link_text):
