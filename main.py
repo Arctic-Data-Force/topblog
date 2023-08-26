@@ -1,14 +1,40 @@
-import base64
 import io
-import streamlit as st
-from PIL import Image
-from streamlit_image_select import image_select
-import zipfile
-import pandas as pd
+import cv2
+import base64
 import random
+import zipfile
+import numpy as np
+import pandas as pd
+from PIL import Image
+import streamlit as st
+from streamlit_image_select import image_select
 
 def image_ai(image, source):
-    print(source)
+    numpy_array = np.array(image)
+    opencv_image = cv2.cvtColor(numpy_array, cv2.COLOR_RGB2BGR)
+    #print(type(opencv_image))
+    
+    if source == "icons/1.png": #VK
+        pass
+    
+    if source == "icons/1.png": #Дзен
+        pass
+    
+    if source == "icons/1.png": #YouTube
+        pass
+    
+    if source == "icons/1.png": #RuTube
+        pass
+    
+    if source == "icons/1.png": #Yappy
+        pass
+    
+    if source == "icons/1.png": #Telegram
+        pass
+    
+    if source == "icons/1.png": #OK
+        pass
+    
     
     return random.randint(100, 2000)
 
@@ -22,10 +48,8 @@ def download_link(object_to_download, download_filename, link_text):
 
 def load_images_from_zip(zip_file):
     images = []
-    
     with zipfile.ZipFile(zip_file) as archive:
         for file_info in archive.infolist():
-            #print(file_info.filename.split('/')[0], )
             if file_info.filename.endswith('/'):
                 continue
             if file_info.filename.split('/')[-1].split('.')[-1].lower() not in correct_types:
@@ -65,6 +89,7 @@ def load_images():
 st.set_page_config(layout="wide")
 
 invalid_img = []
+correct_types = ["jpg", "png",'bmp','jpeg','heic']
 
 button_clicked = False
 
@@ -84,13 +109,7 @@ if not button_clicked:
             "icons/5.png",
             "icons/6.png",
             "icons/7.png",
-        ],
-        #captions=['q','w','q','w','q','w','q'],
-        
-        use_container_width=False,
-    )
-    
-    correct_types = ["jpg", "png",'bmp','jpeg','heic']
+        ],use_container_width=False)
     
     images = load_images()
     if images is not None:
@@ -127,7 +146,4 @@ if button_clicked:
         st.write(f"Всего изображений {len(df)}")
         st.write(f"Не обработалось: {len(invalid_img)}")
 
-    downloadable_data = df
-    download_filename = "example.csv"
-
-    st.markdown(download_link(downloadable_data, download_filename, 'Скачать'), unsafe_allow_html=True)
+    st.markdown(download_link(df, "example.csv", 'Скачать'), unsafe_allow_html=True)
