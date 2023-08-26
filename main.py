@@ -17,22 +17,22 @@ def image_ai(image, source):
     if source == "icons/1.png": #VK
         pass
     
-    if source == "icons/1.png": #Дзен
+    if source == "icons/2.png": #Дзен
         pass
     
-    if source == "icons/1.png": #YouTube
+    if source == "icons/3.png": #YouTube
         pass
     
-    if source == "icons/1.png": #RuTube
+    if source == "icons/4.png": #RuTube
         pass
     
-    if source == "icons/1.png": #Yappy
+    if source == "icons/5.png": #Yappy
         pass
     
-    if source == "icons/1.png": #Telegram
+    if source == "icons/6.png": #Telegram
         pass
     
-    if source == "icons/1.png": #OK
+    if source == "icons/7.png": #OK
         pass
     
     
