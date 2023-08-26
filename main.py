@@ -41,18 +41,7 @@ def load_images_from_zip(zip_file):
 
 def load_images():
     
-    st.markdown(
-    """
-    <style>
-    div.stFileUploader > div {
-        max-width: 100%;
-        padding: 0;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-    uploaded_files = st.file_uploader(label="Выберите изображение или архив с изображениями для распознавания",
+    uploaded_files = st.file_uploader(label="Выберите изображения или архив с изображениями для распознавания",
                                       accept_multiple_files=True, type=["jpg", "png",'bmp','jpeg','zip','heic'])
     
     images = []
@@ -74,8 +63,6 @@ def load_images():
     return images
 
 st.set_page_config(layout="wide")
-
-
 
 invalid_img = []
 
@@ -118,10 +105,8 @@ if not button_clicked:
         for img, name in images:
             if name.split('/')[-1].split('.')[-1].lower() in correct_types:
                 result = image_ai(img, imgs)
-                print('.')
                 
-            else: result = 'Invalid';print('Invalid')
-            
+            else: result = 'Invalid'
             new_row = [result, name]
             df.loc[len(df)] = new_row
         
