@@ -117,7 +117,15 @@ if button_clicked:
     st.title('Выгрузка данных')
     st.write('Окно для выгрузки данных')
     df =pd.read_csv('cash/data.csv')
-    st.dataframe(df)
+    st.dataframe(df,hide_index=True,width=500)
+    
+    with st.expander("",True):
+        max_value = df['KPI'].max()
+        st.write(f"Максимальный KPI: {max_value}")
+        min_value = df['KPI'].min()
+        st.write(f"Минимальный KPI: {min_value}")
+        st.write(f"Всего изображений {len(df)}")
+        st.write(f"Не обработалось: {len(invalid_img)}")
 
     downloadable_data = df
     download_filename = "example.csv"
