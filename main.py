@@ -3,7 +3,8 @@ import streamlit as st
 from PIL import Image
 from streamlit_image_select import image_select
 import zipfile
-
+import pandas as pd
+import random
 
 
 
@@ -32,42 +33,55 @@ def load_images():
             if uploaded_file.name.endswith(".zip"):
                 # Если загруженный файл - архив, извлекаем изображения
                 zip_images = load_images_from_zip(uploaded_file)
-                for image, filename in zip_images:
-                    st.image(image, caption=filename)
+                #for image, filename in zip_images:
+                #    st.image(image, caption=filename)
                 images.extend(zip_images)
             else:
                 # Если загружен файл с изображением
                 image_data = uploaded_file.getvalue()
                 image = Image.open(io.BytesIO(image_data))
-                st.image(image, caption=uploaded_file.name)
+                #st.image(image, caption=uploaded_file.name)
                 images.append((image, uploaded_file.name))
     if len(images) == 0:
         st.warning("No images were uploaded.")
         return None
     return images
 
-st.title("Тестовое приложение")
+result = st.button("Отправить",)
 
-imgs = image_select(
-    label="Выберите платформу",
-    images=[
-        "icons/1.png",
-        "icons/2.png",
-        "icons/3.png",
-        "icons/4.png",
-        "icons/5.png",
-        "icons/6.png",
-        "icons/7.png",
-    ],
+df = pd.DataFrame()
+column_names = ['KPI', 'имя файла']
+
+if not result:
+    st.title("Загрузка данных")
+
+    imgs = image_select(
+        label="Выберите платформу",
+        images=[
+            "icons/1.png",
+            "icons/2.png",
+            "icons/3.png",
+            "icons/4.png",
+            "icons/5.png",
+            "icons/6.png",
+            "icons/7.png",
+        ],
+        
+        use_container_width=False,
+    )
+
     
-    use_container_width=False,
-)
+    
+    # Пример использования:
+    images = load_images()
+    if images is not None:
+        st.write(f"Загружено {len(images)} изображений.")
+        for img, name in images:
+            random_number = random.randint(100, 2000)
+            print(name)
+            
 
-# Пример использования:
-images = load_images()
-if images is not None:
-    st.write(f"Загружено {len(images)} изображений.")
-
-
-
-result = st.button("Обработать изображение",)
+if result:
+    st.title('Выгрузка данных')
+    st.write('Окно для выгрузки данных')
+    
