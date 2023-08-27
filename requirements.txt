@@ -1,10 +1,10 @@
+opencv-python-headless==4.8.0.76
 ultralytics
 supervision
 pytesseract
 numpy
 pandas
 Pillow
-opencv-python-headless
 streamlit
 matplotlib
 streamlit-image-select
