@@ -17,11 +17,11 @@ from streamlit_image_select import image_select
 
 MODEL = ""
 
+
 def image_ai(image, source):
     global MODEL
     numpy_array = np.array(image)
     opencv_image = cv2.cvtColor(numpy_array, cv2.COLOR_RGB2BGR)
-    # print(type(opencv_image))
 
     if source == "icons/1.png":  # VK
         MODEL = "models/best_vk_small.pt"
@@ -63,11 +63,6 @@ def image_ai(image, source):
                     confidence=results[0].boxes.conf.cpu().numpy(),
                     class_id=results[0].boxes.cls.cpu().numpy().astype(int)
         )
-        # format custom labels
-        labels = [f"{CLASS_NAMES_DICT[class_id]} {confidence:0.2f}"
-                    for _, confidence, class_id, tracker_id
-                    in detections
-        ]
 
         # format custom labels and frames
         label_frame_list = []
@@ -116,7 +111,6 @@ def load_images_from_zip(zip_file):
 def load_images():
     uploaded_files = st.file_uploader(label="Выберите изображения или архив с изображениями для распознавания",
                                       accept_multiple_files=True, type=["jpg", "png", 'bmp', 'jpeg', 'zip', 'heic'])
-
     images = []
     for uploaded_file in uploaded_files:
         if uploaded_file is not None:
@@ -136,13 +130,14 @@ def load_images():
     return images
 
 
+
 invalid_img = []
 correct_types = ["jpg", "png", 'bmp', 'jpeg', 'heic']
 
 button_clicked = False
 col1, col2, col3, col4, col5 = st.columns(5)
 if not button_clicked:
-    if col3.button("Отправить"): button_clicked = True
+    if col3.button("Отправить") and MODEL != "": button_clicked = True
 
 if not button_clicked:
     st.markdown("<h1 style='text-align: center;'>Загрузка данных</h1>", unsafe_allow_html=True)
@@ -181,7 +176,14 @@ if not button_clicked:
             new_row = [result, name]
             df.loc[len(df)] = new_row
 
-        # TODO: ПОСТОБРАБОТКА
+        pattern = r'(\d+\.\d+|\d+)'
+
+        df['kpi'] = df['kpi'].apply(lambda x: ' '.join(re.findall(pattern, x)) if (
+                'invalid' not in x.lower() and re.search(pattern, x)) else 'invalid')
+
+        if not os.path.exists('cash'):
+            os.makedirs('cash')
+            os.makedirs('cash/imgs')
 
         df.to_csv('cash/data.csv', index=False)
 
@@ -202,10 +204,6 @@ if button_clicked:
     df = pd.read_csv('cash/data.csv')
     fdf = df.loc[df['KPI'] != 'Invalid']
 
-    pattern = r'(\d+\.\d+|\d+)'
-
-    df['kpi'] = df['kpi'].apply(lambda x: ' '.join(re.findall(pattern, x)) if (
-                'invalid' not in x.lower() and re.search(pattern, x)) else 'invalid')
     st.dataframe(df, hide_index=True, width=699)
 
     with st.expander("Доп. информация", False):
