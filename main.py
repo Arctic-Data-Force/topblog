@@ -40,18 +40,13 @@ def image_ai(image, source):
 
     if source == "icons/6.png":  # Telegram
         MODEL = "models/best_tg_small.pt"
+        print("Model", MODEL)
 
     if source == "icons/7.png":  # OK
         pass
 
-    if os.path.exists('cash'):
-        shutil.rmtree('cash')
-
-    if not os.path.exists('cash'):
-        os.makedirs('cash')
-        os.makedirs('cash/imgs')
-
     model = YOLO(MODEL)
+    print(model)
     model.fuse()
 
     CLASS_NAMES_DICT = model.names
@@ -137,7 +132,7 @@ correct_types = ["jpg", "png", 'bmp', 'jpeg', 'heic']
 button_clicked = False
 col1, col2, col3, col4, col5 = st.columns(5)
 if not button_clicked:
-    if col3.button("Отправить") and MODEL != "": button_clicked = True
+    if col3.button("Отправить"): button_clicked = True
 
 if not button_clicked:
     st.markdown("<h1 style='text-align: center;'>Загрузка данных</h1>", unsafe_allow_html=True)
@@ -159,7 +154,7 @@ if not button_clicked:
 
     images = load_images()
     if images is not None:
-        column_names = ['KPI', 'File name']
+        column_names = ['kpi', 'filename']
         df = pd.DataFrame(columns=column_names)
         st.write(f"Загружено {len(images)} изображений.")
 
@@ -187,7 +182,7 @@ if not button_clicked:
 
         df.to_csv('cash/data.csv', index=False)
 
-        top5 = df.loc[df['KPI'] != 'Invalid'].sort_values(by='KPI', ascending=False).head(5)['File name'].tolist()
+        top5 = df.loc[df['kpi'] != 'Invalid'].sort_values(by='kpi', ascending=False).head(5)['filename'].tolist()
         print(top5)
         with open('cash/top5.txt', 'w') as file:
             for item in top5:
@@ -202,21 +197,21 @@ if not button_clicked:
 if button_clicked:
     st.markdown("<h1 style='text-align: center;'>Подготовка отчета</h1>", unsafe_allow_html=True)
     df = pd.read_csv('cash/data.csv')
-    fdf = df.loc[df['KPI'] != 'Invalid']
+    fdf = df.loc[df['kpi'] != 'Invalid']
 
     st.dataframe(df, hide_index=True, width=699)
 
     with st.expander("Доп. информация", False):
-        max_value = fdf['KPI'].max()
+        max_value = fdf['kpi'].max()
         st.write(f"Максимальный KPI: {max_value}")
-        min_value = fdf['KPI'].min()
+        min_value = fdf['kpi'].min()
         st.write(f"Минимальный KPI: {min_value}")
         st.write(f"Всего изображений {len(df)}")
-        st.write(f"Не обработалось: {df['KPI'].value_counts().get('Invalid', 0)}")
+        st.write(f"Не обработалось: {df['kpi'].value_counts().get('Invalid', 0)}")
 
     fig, ax = plt.subplots()
-    ax.hist(fdf["KPI"], bins=15)
-    ax.set_xlabel('KPI')
+    ax.hist(fdf["kpi"], bins=15)
+    ax.set_xlabel('kpi')
     ax.set_ylabel('Частота')
     ax.set_title('Гистограмма распределения KPI')
     st.pyplot(fig)
@@ -233,3 +228,14 @@ if button_clicked:
     st.markdown(download_link(df, "example.csv",
                               "<div style='text-align: center; color: grey; font-size: 34px;'>Скачать</div>"),
                 unsafe_allow_html=True)
+
+    folder = 'cash/imgs/'
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
