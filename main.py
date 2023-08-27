@@ -139,7 +139,7 @@ correct_types = ["jpg", "png", 'bmp', 'jpeg', 'heic']
 button_clicked = False
 col1, col2, col3, col4, col5 = st.columns(5)
 if not button_clicked:
-    if col3.button("Отправить") and MODEL != "": button_clicked = True
+    if col3.button("Отправить"): button_clicked = True
 
 if not button_clicked:
     st.markdown("<h1 style='text-align: center;'>Загрузка данных</h1>", unsafe_allow_html=True)
