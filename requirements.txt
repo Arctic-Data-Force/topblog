@@ -1,10 +1,10 @@
-opencv-python
 ultralytics
 supervision
 pytesseract
 numpy
 pandas
 Pillow
+opencv-python-headless
 streamlit
 matplotlib
 streamlit-image-select
