@@ -40,6 +40,7 @@ def image_ai(image, source):
 
     if source == "icons/6.png":  # Telegram
         MODEL = "models/best_tg_small.pt"
+        print("Model", MODEL)
 
     if source == "icons/7.png":  # OK
         pass
@@ -52,6 +53,7 @@ def image_ai(image, source):
         os.makedirs('cash/imgs')
 
     model = YOLO(MODEL)
+    print(model)
     model.fuse()
 
     CLASS_NAMES_DICT = model.names
