@@ -1,6 +1,7 @@
 import io
 import os
 import shutil
+import re
 import cv2
 import base64
 from ultralytics import YOLO
@@ -200,6 +201,11 @@ if button_clicked:
     st.markdown("<h1 style='text-align: center;'>Подготовка отчета</h1>", unsafe_allow_html=True)
     df = pd.read_csv('cash/data.csv')
     fdf = df.loc[df['KPI'] != 'Invalid']
+
+    pattern = r'(\d+\.\d+|\d+)'
+
+    df['kpi'] = df['kpi'].apply(lambda x: ' '.join(re.findall(pattern, x)) if (
+                'invalid' not in x.lower() and re.search(pattern, x)) else 'invalid')
     st.dataframe(df, hide_index=True, width=699)
 
     with st.expander("Доп. информация", False):
