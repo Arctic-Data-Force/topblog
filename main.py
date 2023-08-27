@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 from streamlit_image_select import image_select
 
 def image_ai(image, source):
+    print(type(image))
     numpy_array = np.array(image)
     opencv_image = cv2.cvtColor(numpy_array, cv2.COLOR_RGB2BGR)
     #print(type(opencv_image))
@@ -121,6 +122,9 @@ if not button_clicked:
             "icons/6.png",
             "icons/7.png",
         ],use_container_width=False)
+    
+    if imgs == "icons/4.png" or imgs == "icons/5.png" or imgs == "icons/7.png":
+        st.warning('В разработке')
     
     images = load_images()
     if images is not None:
