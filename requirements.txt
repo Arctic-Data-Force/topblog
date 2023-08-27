@@ -1,0 +1,10 @@
+opencv-python
+ultralytics
+supervision
+pytesseract
+numpy
+pandas
+Pillow
+streamlit
+matplotlib
+streamlit-image-select
