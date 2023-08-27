@@ -45,13 +45,6 @@ def image_ai(image, source):
     if source == "icons/7.png":  # OK
         pass
 
-    if os.path.exists('cash'):
-        shutil.rmtree('cash')
-
-    if not os.path.exists('cash'):
-        os.makedirs('cash')
-        os.makedirs('cash/imgs')
-
     model = YOLO(MODEL)
     print(model)
     model.fuse()
